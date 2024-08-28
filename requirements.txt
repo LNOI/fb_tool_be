@@ -4,4 +4,5 @@ sqlmodel
 pydantic
 alembic
 pydantic_settings
-psycopg2-binary 
+psycopg2-binary
+requests

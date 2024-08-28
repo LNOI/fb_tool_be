@@ -10,7 +10,8 @@ class CommentFacebook(SQLModel, table=True):
     user_id: UUID = Field(foreign_key="users.id")
     content: str | None = None
     images: str | None = None
-    owner_name: str
-    owner_link: str | None = None
+    sender_name: str
+    sender_link: str | None = None
     note: str | None = None
+    comment_date: str | None = None
     last_sync: datetime | None = None

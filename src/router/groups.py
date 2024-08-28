@@ -30,7 +30,7 @@ class DataInputGroup(BaseModel):
     data: list[InputGroup] | None = None
 
 
-@router.post("/")
+@router.post("/", status_code=201)
 async def create_group(
     user_id: UUID, group: DataInputGroup, db: Session = Depends(get_session)
 ):
@@ -55,7 +55,6 @@ async def create_group(
     return {"message": "Create group"}
 
 
-# Endpoint to get groups with pagination
 @router.get("/")
 async def get_groups(
     user_id: UUID, s: int = 0, limit: int = 15, db: Session = Depends(get_session)

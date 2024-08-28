@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from src.db.posts import PostFacebook
 from src.db.users import Users
 from src.db.groups import GroupFacebook
+from src.db.comments import CommentFacebook
 from src.utils.db import get_session, Session
 from sqlmodel import select
 
@@ -31,7 +32,7 @@ class DataInputPost(BaseModel):
     data: list[InputPost] | None = None
 
 
-@router.post("/")
+@router.post("/", status_code=201)
 async def create_post(
     user_id: UUID,
     group_id: UUID,
@@ -67,7 +68,7 @@ async def create_post(
         db_posts.append(new_post)
     db.add_all(db_posts)
     db.commit()
-    return {"message": "Create post"}
+    return {"message": "Success"}
 
 
 @router.get("/")
@@ -100,3 +101,31 @@ async def get_posts(
         .order_by(PostFacebook.last_sync.desc())
     ).all()
     return posts
+
+
+@router.get("/{post_id}")
+async def get_post(
+    user_id: UUID, group_id: UUID, post_id: UUID, db: Session = Depends(get_session)
+):
+    """
+    Get post and comments
+    """
+    post = db.scalars(
+        select(PostFacebook).where(
+            PostFacebook.id == post_id,
+            PostFacebook.user_id == user_id,
+            PostFacebook.group_id == group_id,
+        )
+    ).one_or_none()
+
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    data = {"post": post, "comments": []}
+    comments = db.scalars(
+        select(CommentFacebook).where(
+            CommentFacebook.post_id == post_id, CommentFacebook.user_id == user_id
+        )
+    ).all()
+    data["comments"] = comments
+    return data

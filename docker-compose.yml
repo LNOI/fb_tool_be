@@ -1,7 +1,7 @@
 services:
   postgres_fb:
-    image: postgres:16.3
-    container_name: postgres_hydro
+    image: postgres:14
+    container_name: postgres_fb
     environment:
       POSTGRES_USER: fbtool
       POSTGRES_PASSWORD: password
