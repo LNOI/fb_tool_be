@@ -2,95 +2,58 @@ import requests
 import json
 from datetime import datetime
 
-sample_group = {
-    "link": "https://www.facebook.com/groups/113194777190399/",
-    "name": "🏘🏠 Cho Thuê Phòng Trọ - Nhà Nguyên Căn - Chung Cư - Ở Ghép Tại TP.HCM",
-    "privacy": "Công khai",
-    "members": " 392K thành viên ",
-    "post_per_day": " 10+ bài viết mỗi ngày",
-}
+# sample_group = {
+#     "link": "https://www.facebook.com/groups/113194777190399/",
+#     "name": "🏘🏠 Cho Thuê Phòng Trọ - Nhà Nguyên Căn - Chung Cư - Ở Ghép Tại TP.HCM",
+#     "privacy": "Công khai",
+#     "members": " 392K thành viên ",
+#     "post_per_day": " 10+ bài viết mỗi ngày",
+# }
 
 # sample_post = {
 #     "title": "Thue phong tro quan 10",
-#     "images": None,
-#     "video": None,
-#     "link": "https://www.facebook.com/groups/113194777190399/",
-#     "post_date": "2024-09-01",
-#     "owner_name": "ThanhLoi",
+#     "link_post": "https://www.facebook.com/groups/113194777190399/",
+#     "link_images": [],
 #     "reaction": "100",
-#     "profile_owner_post": "https://www.facebook.com/thanhloi",
+#     "owner_name": "thanhloi",
+#     "owner_link": "https://www.facebook.com/thanhloi",
+#     "comments": [
+#         {
+#             "content": "Tôi cần thuê",
+#             "owner_link": "https://www.facebook.com/thanhloi",
+#             "owner_name": "thanhloi",
+#         }
+#     ],
 # }
-# groups = []
-
-# for i in range(100):
-#     sample_group["name"] = (
-#         f"🏘🏠 Cho Thuê Phòng Trọ - Nhà Nguyên Căn - Chung Cư - Ở Ghép Tại TP.HCM {i}"
-#     )
-#     groups.append(sample_group)
-
-
-# resp = requests.get(
-#     "http://localhost:8001/user/00000000-0000-0000-0000-000000000000/groups?s=0&limit=100"
-# )
-
-# groups = resp.json()
-
-# for g in range(len(groups)):
-#     print(groups[g]["id"])
-#     posts = []
-#     for i in range(100):
-#         sample_post["name"] = (
-#             f"🏘🏠 Cho Thuê Phòng Trọ - Nhà Nguyên Căn - Chung Cư - Ở Ghép Tại TP.HCM {g}"
-#         )
-#         sample_post["link"] = (
-#             "https://www.facebook.com/groups/113194777190399/" + str(g) + str(i)
-#         )
-#         posts.append(sample_post)
-#     resp = requests.post(
-#         f"http://localhost:8001/user/00000000-0000-0000-0000-000000000000/groups/{groups[g]['id']}/posts",
-#         json={"data": posts},
-#     )
-#     print(resp.json())
-
-
-# resp = requests.get(
-#     "http://localhost:8001/user/00000000-0000-0000-0000-000000000000/groups/9eef3ea3-29b0-49ac-aa48-a742b4970154/posts?s=0&limit=15"
+# {
+#     "owner_name": "Lê Hoài Lam",
+#     "owner_link": "https://www.facebook.com/100047470752621",
+#     "title": "Căn Studio Trống Sẵn Ban Công Cực To Tách Bếp Sau Lưng The Vista An Phú\nĐường 16 An Phú \n-nhà rộng có sẵn ban công to sân vườn \n-nội thất trang bị đầy đủ y hình … Xem thêm\n+4",
+#     "reaction": "1",
+#     "links_images": [],
+#     "comments": [
+#         {
+#             "sender_name": "Khả Ngân",
+#             "sender_link": "100024926827577",
+#             "content": "Xin giá ạ"
+#         },
+#         {
+#             "sender_name": "Lê Hoài Lam",
+#             "sender_link": "100047470752621",
+#             "content": "Cho pet"
+#         }
+#     ],
+#     "link_post": ""
+# }
+# resp = requests.post(
+#     "http://localhost:8001/user/00000000-0000-0000-0000-000000000000/groups/1c836a56-9162-42ff-b665-3502dc2856e0/posts",
+#     json=sample_post,
 # )
 # print(resp.json())
 
-import random
-
-random_comment = ["Tôi cần mua", "Tối cần thuê", "Tôi cần bán", "Tôi cần tìm"]
+url = "user/00000000-0000-0000-0000-000000000000/groups/047b32cd-0cae-4ba8-ac28-25eb0b538e3c/posts/90f751a9-1e7b-4b30-a02d-19d9b82111ae"
 
 resp = requests.get(
-    "http://localhost:8001/user/00000000-0000-0000-0000-000000000000/groups?s=0&limit=100"
+    f"http://localhost:8001/user/00000000-0000-0000-0000-000000000000/groups/c6a5cd0e-0f94-4a64-8e6f-74807d3efdad/posts/?s=0&limit=20"
 )
-groups = resp.json()
-
-user_random = ["User1", "User2", "User3", "User4", "User5", "User6", "User7", "User8"]
-
-
-comment_sample = {}
-for group in groups:
-    resp = requests.get(
-        f"http://localhost:8001/user/00000000-0000-0000-0000-000000000000/groups/{group['id']}/posts?s=0&limit=50"
-    )
-    posts = resp.json()
-
-    for p in posts:
-        comments = []
-        for i in range(50):
-            cm = {
-                "content": random.choice(random_comment),
-                "sender_name": random.choice(user_random),
-                "sender_link": "https://www.facebook.com/thanhloi",
-                "comment_date": datetime.now().isoformat(),
-                "note": "note",
-                "images": "https://www.facebook.com/thanhloi",
-            }
-            comments.append(cm)
-        resp = requests.post(
-            f"http://localhost:8001/user/00000000-0000-0000-0000-000000000000/groups/{group['id']}/posts/{p['id']}/comments",
-            json={"data": comments},
-        )
-        print(resp.json())
+print(resp.json())

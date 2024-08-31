@@ -9,11 +9,11 @@ class PostFacebook(SQLModel, table=True):
     group_id: UUID = Field(default=None, foreign_key="group_facebook.id")
     user_id: UUID = Field(default=None, foreign_key="users.id")
     title: str | None = None
-    images: str | None = None
+    link_images: str | None = None
     video: str | None = None
-    link: str | None = None
+    link_post: str | None = None
     reaction: str | None = None
     owner_name: str | None = None
-    profile_owner_post: str = None
+    owner_link: str | None = None
     post_date: str | None = None
     last_sync: datetime | None = None

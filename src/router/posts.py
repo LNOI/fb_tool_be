@@ -17,32 +17,39 @@ router = APIRouter(
 user_root_id: UUID = "00000000-0000-0000-0000-000000000000"
 
 
+class CommentPost(BaseModel):
+    content: str | None = None
+    sender_name: str | None = None
+    sender_link: str | None = None
+
+
 class InputPost(BaseModel):
     title: str | None = None
-    images: str | None = None
+    link_images: list | None = []
     video: str | None = None
-    link: str | None = None
+    uuid_post: str | None = None
     post_date: str | None = None
     owner_name: str | None = None
+    owner_link: str | None = None
     reaction: str | None = None
-    profile_owner_post: str | None = None
+    comments: list[CommentPost] | None = []
 
 
-class DataInputPost(BaseModel):
-    data: list[InputPost] | None = None
+# class DataInputPost(BaseModel):
+#     data: list[InputPost] | None = None
 
 
 @router.post("/", status_code=201)
 async def create_post(
     user_id: UUID,
     group_id: UUID,
-    input: DataInputPost,
+    input: InputPost,
     db: Session = Depends(get_session),
 ):
     """
     Create post
     """
-    db_posts = []
+
     user = db.scalars(select(Users).where(Users.id == user_id)).one_or_none()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -53,22 +60,61 @@ async def create_post(
     if not group:
         raise HTTPException(status_code=404, detail="Group not found")
 
-    for post in input.data:
-        post_exist = db.scalars(
-            select(PostFacebook).where(PostFacebook.link == post.link)
-        ).one_or_none()
-        if post_exist:
-            continue
-        new_post = PostFacebook(
-            **post.model_dump(),
-            user_id=user_id,
-            group_id=group_id,
-            last_sync=datetime.now(),
+    if not input.uuid_post:  # check if link_post is empty
+        raise HTTPException(status_code=400, detail="uuid post is required")
+
+    post_exist = db.scalars(
+        select(PostFacebook).where(
+            PostFacebook.link_post == group.link + "posts/" + input.uuid_post
         )
-        db_posts.append(new_post)
-    db.add_all(db_posts)
+    ).one_or_none()
+    post_dict = input.model_dump()
+    comments = post_dict.pop("comments")
+    if post_exist:
+        for cm in comments:
+            try:
+                print("add comment")
+                db_cm = CommentFacebook(
+                    content=cm["content"],
+                    post_id=post_exist.id,
+                    user_id=user_id,
+                    sender_name=cm["sender_name"],
+                    sender_link=cm["sender_link"],
+                    last_sync=datetime.now(),
+                )
+                db.add(db_cm)
+                db.commit()
+            except Exception as e:
+                print(e)
+        return {"message": "Post exist"}
+
+    new_post = PostFacebook(
+        **post_dict,
+        link_post=group.link + "posts/" + input.uuid_post,
+        user_id=user_id,
+        group_id=group_id,
+        last_sync=datetime.now(),
+    )
+    db.add(new_post)
     db.commit()
-    return {"message": "Success"}
+    db.refresh(new_post)
+    for cm in comments:
+        try:
+            print("add comment")
+            db_cm = CommentFacebook(
+                content=cm["content"],
+                post_id=new_post.id,
+                user_id=user_id,
+                sender_name=cm["sender_name"],
+                sender_link=cm["sender_link"],
+                last_sync=datetime.now(),
+            )
+            db.add(db_cm)
+            db.commit()
+        except Exception as e:
+            print(e)
+
+    return {"message": "Add post success"}
 
 
 @router.get("/")
