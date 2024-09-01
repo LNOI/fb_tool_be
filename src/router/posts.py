@@ -71,6 +71,11 @@ async def create_post(
     post_dict = input.model_dump()
     comments = post_dict.pop("comments")
     if post_exist:
+        post_exist.link_images = post_dict["link_images"]
+        post_exist.title = post_dict["title"]
+        post_exist.last_sync = datetime.now()
+        db.add(post_exist)
+        db.commit()
         for cm in comments:
             try:
                 print("add comment")
