@@ -10,3 +10,11 @@ services:
       - "5445:5432"
     volumes:
       - /Users/nguyenthanhloi/Documents/storage/db_tool_fb:/var/lib/postgresql/data
+  redis_fb:
+    image: redis:latest
+    container_name: redis_fb
+    environment:
+      - REDIS_PASSWORD=password
+      - REDIS_PORT=6379
+    ports:
+      - "6379:6379"

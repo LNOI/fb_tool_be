@@ -6,3 +6,4 @@ alembic
 pydantic_settings
 psycopg2-binary
 requests
+redis

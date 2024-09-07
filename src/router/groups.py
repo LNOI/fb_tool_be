@@ -64,9 +64,62 @@ async def get_groups(
         raise HTTPException(status_code=404, detail="User not found")
     groups = db.scalars(
         select(GroupFacebook)
-        .where(GroupFacebook.user_id == user.id)
+        .where(GroupFacebook.user_id == user_id, GroupFacebook.deleted.is_(False))
         .offset(s)
         .limit(limit)
         .order_by(GroupFacebook.last_sync.desc())
     ).all()
+
+    groups = [
+        {
+            **group.model_dump(),
+            "total_post": [post for post in group.posts if not post.deleted].__len__(),
+        }
+        for group in groups
+    ]
     return groups
+
+
+@router.delete("/{group_id}")
+async def delete_group(
+    user_id: UUID, group_id: UUID, db: Session = Depends(get_session)
+):
+    user = db.scalars(select(Users).where(Users.id == user_id)).one_or_none()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    group = db.scalars(
+        select(GroupFacebook).where(
+            GroupFacebook.user_id == user.id, GroupFacebook.id == group_id
+        )
+    ).one_or_none()
+    if group is None:
+        raise HTTPException(status_code=404, detail="Group not found")
+
+    group.deleted = True
+    db.add(group)
+    db.commit()
+    return {"message": "Delete group success"}
+
+
+class InputGroupIdDelete(BaseModel):
+    group_ids: list[UUID] | None = []
+
+
+@router.post("/edit/delete")
+async def edit_deletet_group(
+    user_id: UUID, input: InputGroupIdDelete, dp: Session = Depends(get_session)
+):
+    db_groups = []
+    for group_id in input.group_ids:
+        group = dp.scalars(
+            select(GroupFacebook).where(
+                GroupFacebook.user_id == user_id, GroupFacebook.id == group_id
+            )
+        ).one_or_none()
+        if group is None:
+            continue
+        group.deleted = True
+        db_groups.append(group)
+    dp.add_all(db_groups)
+    dp.commit()
+    return {"message": "Delete group success"}
