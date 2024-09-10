@@ -1,0 +1,30 @@
+# Database Dev Prod
+http:
+  routers:
+    traefik:
+      rule: "Host(`traefik_main.facebooktool.com`)"
+      entrypoints:
+        - private
+      service: "api@internal"
+      middlewares: ["dashboard-auth"]
+      tls:
+        domains:
+          - main: "traefik_main.hygentrade.com"
+            sans:
+              - "*.traefik_main.hygentrade.com"
+  middlewares:
+    dashboard-auth:
+      basicAuth:
+        users:
+          - "admin:$apr1$kutbjvw2$HT/cddzVosQ1dCc00pJea/"
+
+tls:
+  certificates:
+    - certFile: "/etc/certs/authinator/local-cert.pem"
+      keyFile: "/etc/certs/authinator/local-key.pem"
+    - certFile: "/etc/certs/security/local-cert.pem"
+      keyFile: "/etc/certs/security/local-key.pem"
+    - certFile: "/etc/certs/local-cert.pem"
+      keyFile: "/etc/certs/local-key.pem"
+    - certFile: "/etc/certs/hygentrade/local-cert.pem"
+      keyFile: "/etc/certs/hygentrade/local-key.pem"

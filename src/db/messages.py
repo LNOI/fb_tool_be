@@ -6,7 +6,7 @@ from datetime import datetime
 class TemplateMessage(SQLModel, table=True):
     __tablename__ = "template_message"
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    user_id: UUID = Field(foreign_key="users.id", default=None, nullable=True)
+    user_id: UUID
     name: str
     content: str
     images: str | None = None
@@ -17,7 +17,7 @@ class TemplateMessage(SQLModel, table=True):
 class MessagesFacebook(SQLModel, table=True):
     __tablename__ = "messages_facebook"
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    user_id: UUID = Field(foreign_key="users.id")
+    user_id: UUID
     template_id: UUID = Field(
         foreign_key="template_message.id", default=None, nullable=True
     )

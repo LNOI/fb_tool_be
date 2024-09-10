@@ -2,3 +2,6 @@
 ./postgres_data_fb
 ./postgres_data_fb/*
 postgres_data_fb
+*.pyc
+*__pycache__
+./src/db/__pycache__/*

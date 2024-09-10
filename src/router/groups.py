@@ -7,6 +7,7 @@ from src.utils.db import get_session, Session
 from src.db.groups import GroupFacebook
 from src.db.users import Users
 from src.router.base import BASE_ROUTER
+from src.utils.redis import cache_api, delete_cache
 
 user_root_id: UUID = "00000000-0000-0000-0000-000000000000"
 
@@ -34,34 +35,31 @@ class DataInputGroup(BaseModel):
 async def create_group(
     user_id: UUID, group: DataInputGroup, db: Session = Depends(get_session)
 ):
-    print(user_id)
     db_groups = []
-    user = db.scalars(select(Users).where(Users.id == user_id)).one_or_none()
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
     for group in group.data:
         group_exist = db.scalars(
-            select(GroupFacebook).where(GroupFacebook.link == group.link)
+            select(GroupFacebook).where(
+                GroupFacebook.link == group.link, GroupFacebook.user_id == user_id
+            )
         ).one_or_none()
         if group_exist:
             continue
         group = GroupFacebook(
-            **group.model_dump(), user_id=user.id, last_sync=datetime.now()
+            **group.model_dump(), user_id=user_id, last_sync=datetime.now()
         )
         db_groups.append(group)
     print(db_groups)
     db.add_all(db_groups)
     db.commit()
+    delete_cache(f"get_groups-user_id_{user_id}")
     return {"message": "Create group"}
 
 
 @router.get("/")
+# @cache_api(ex=60)
 async def get_groups(
     user_id: UUID, s: int = 0, limit: int = 15, db: Session = Depends(get_session)
 ):
-    user = db.scalars(select(Users).where(Users.id == user_id)).one_or_none()
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
     groups = db.scalars(
         select(GroupFacebook)
         .where(GroupFacebook.user_id == user_id, GroupFacebook.deleted.is_(False))
@@ -84,12 +82,9 @@ async def get_groups(
 async def delete_group(
     user_id: UUID, group_id: UUID, db: Session = Depends(get_session)
 ):
-    user = db.scalars(select(Users).where(Users.id == user_id)).one_or_none()
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
     group = db.scalars(
         select(GroupFacebook).where(
-            GroupFacebook.user_id == user.id, GroupFacebook.id == group_id
+            GroupFacebook.user_id == user_id, GroupFacebook.id == group_id
         )
     ).one_or_none()
     if group is None:
@@ -98,7 +93,7 @@ async def delete_group(
     group.deleted = True
     db.add(group)
     db.commit()
-    return {"message": "Delete group success"}
+    return None
 
 
 class InputGroupIdDelete(BaseModel):
@@ -106,7 +101,7 @@ class InputGroupIdDelete(BaseModel):
 
 
 @router.post("/edit/delete")
-async def edit_deletet_group(
+async def edit_delete_group(
     user_id: UUID, input: InputGroupIdDelete, dp: Session = Depends(get_session)
 ):
     db_groups = []
@@ -122,4 +117,5 @@ async def edit_deletet_group(
         db_groups.append(group)
     dp.add_all(db_groups)
     dp.commit()
-    return {"message": "Delete group success"}
+    delete_cache(f"get_groups-user_id_{user_id}")
+    return None

@@ -7,14 +7,13 @@ from src.db.users import Users
 from src.db.groups import GroupFacebook
 from src.db.comments import CommentFacebook
 from src.utils.db import get_session, Session
+from src.utils.redis import cache_api, delete_cache
 from sqlmodel import select
 
 router = APIRouter(
     prefix="/user/{user_id}/groups/{group_id}/posts",
     tags=["posts"],
 )
-
-user_root_id: UUID = "00000000-0000-0000-0000-000000000000"
 
 
 class CommentPost(BaseModel):
@@ -49,11 +48,6 @@ async def create_post(
     """
     Create post
     """
-
-    user = db.scalars(select(Users).where(Users.id == user_id)).one_or_none()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
     group = db.scalars(
         select(GroupFacebook).where(GroupFacebook.id == group_id)
     ).one_or_none()
@@ -123,6 +117,7 @@ async def create_post(
 
 
 @router.get("/")
+# @cache_api(ex=60)
 async def get_posts(
     user_id: UUID,
     group_id: UUID,
@@ -133,9 +128,6 @@ async def get_posts(
     """
     Get posts
     """
-    user = db.scalars(select(Users).where(Users.id == user_id)).one_or_none()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
 
     group = db.scalars(
         select(GroupFacebook).where(GroupFacebook.id == group_id)
@@ -189,12 +181,12 @@ async def get_post(
 async def delete_post(
     user_id: UUID, group_id: UUID, post_id: UUID, db: Session = Depends(get_session)
 ):
-    user = db.scalars(select(Users).where(Users.id == user_id)).one_or_none()
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-
     posts = db.scalars(
-        select(PostFacebook).where(PostFacebook.id == post_id)
+        select(PostFacebook).where(
+            PostFacebook.id == post_id,
+            PostFacebook.user_id == user_id,
+            PostFacebook.group_id == group_id,
+        )
     ).one_or_none()
     if posts is None:
         raise HTTPException(status_code=404, detail="Post not found")
@@ -231,4 +223,5 @@ async def edit_deletet_group(
         db_posts.append(post)
     db.add_all(db_posts)
     db.commit()
+    delete_cache(f"get_posts-user_id_{user_id}-group_id_{group_id}")
     return {"message": "Delete post success"}

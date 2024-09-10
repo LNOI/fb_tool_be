@@ -7,7 +7,7 @@ class CommentFacebook(SQLModel, table=True):
     __tablename__ = "comment_facebook"
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     post_id: UUID = Field(foreign_key="post_facebook.id")
-    user_id: UUID = Field(foreign_key="users.id")
+    user_id: UUID
     content: str | None = None
     images: str | None = None
     sender_name: str | None = None

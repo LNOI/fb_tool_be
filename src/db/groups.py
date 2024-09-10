@@ -7,7 +7,7 @@ from src.db.posts import PostFacebook
 class GroupFacebook(SQLModel, table=True):
     __tablename__ = "group_facebook"
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    user_id: UUID = Field(foreign_key="users.id")
+    user_id: UUID
     link_group: str | None = None
     link: str
     name: str
