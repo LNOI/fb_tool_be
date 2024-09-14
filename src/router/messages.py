@@ -1,7 +1,8 @@
 from uuid import uuid1, UUID
 from fastapi import APIRouter, Depends
 from src.db.messages import MessagesFacebook, TemplateMessage
-from src.db.users import Users
+
+# from src.db.users import Users
 from src.utils.db import get_session, Session
 from sqlmodel import select
 from pydantic import BaseModel
@@ -33,11 +34,6 @@ async def create_message(
     """
     Create message
     """
-    # user = db.scalars(select(Users).where(Users.id == user_id)).one_or_none()
-
-    # if not user:
-    #     return {"message": "User not found"}
-
     message = MessagesFacebook(**input.model_dump(), user_id=user_id)
     db.add(message)
     db.commit()
@@ -49,10 +45,6 @@ async def get_messages(user_id: str, db: Session = Depends(get_session)):
     """
     get all messages
     """
-    # user = db.scalars(select(Users).where(Users.id == user_id)).one_or_none()
-
-    # if not user:
-    #     return {"message": "User not found"}
 
     messages = db.exec(
         select(MessagesFacebook)

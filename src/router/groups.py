@@ -5,11 +5,7 @@ from sqlmodel import select
 from pydantic import BaseModel
 from src.utils.db import get_session, Session
 from src.db.groups import GroupFacebook
-from src.db.users import Users
-from src.router.base import BASE_ROUTER
-from src.utils.redis import cache_api, delete_cache
-
-user_root_id: UUID = "00000000-0000-0000-0000-000000000000"
+from src.utils.redis import delete_cache
 
 router = APIRouter(
     prefix="/user/{user_id}/groups",
@@ -18,8 +14,8 @@ router = APIRouter(
 
 
 class InputGroup(BaseModel):
-    link: str
     name: str
+    link_group: str
     description: str | None = None
     privacy: str
     members: str
@@ -39,7 +35,8 @@ async def create_group(
     for group in group.data:
         group_exist = db.scalars(
             select(GroupFacebook).where(
-                GroupFacebook.link == group.link, GroupFacebook.user_id == user_id
+                GroupFacebook.link_group == group.link_group,
+                GroupFacebook.user_id == user_id,
             )
         ).one_or_none()
         if group_exist:

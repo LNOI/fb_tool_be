@@ -72,7 +72,7 @@ async def create_comment(
             **comment.model_dump(),
             post_id=post.id,
             user_id=user.id,
-            last_sync=datetime.now()
+            last_sync=datetime.now(),
         )
         db_comments.append(comment)
     db.add_all(db_comments)

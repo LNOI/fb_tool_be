@@ -9,7 +9,6 @@ class GroupFacebook(SQLModel, table=True):
     id: UUID = Field(default_factory=uuid4, primary_key=True)
     user_id: UUID
     link_group: str | None = None
-    link: str
     name: str
     description: str | None = None
     privacy: str  #  Công khai | Riêng tư
