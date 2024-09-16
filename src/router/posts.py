@@ -26,7 +26,7 @@ class InputPost(BaseModel):
     title: str | None = None
     link_images: list | None = []
     video: str | None = None
-    uuid_post: str | None = None
+    link_post: str | None = None
     post_date: str | None = None
     owner_name: str | None = None
     owner_link: str | None = None
@@ -54,13 +54,11 @@ async def create_post(
     if not group:
         raise HTTPException(status_code=404, detail="Group not found")
 
-    if not input.uuid_post:  # check if link_post is empty
-        raise HTTPException(status_code=400, detail="uuid post is required")
+    if not input.link_post:  # check if link_post is empty
+        raise HTTPException(status_code=400, detail="Link post is required")
 
     post_exist = db.scalars(
-        select(PostFacebook).where(
-            PostFacebook.link_post == group.link + "posts/" + input.uuid_post
-        )
+        select(PostFacebook).where(PostFacebook.link_post == input.link_post)
     ).one_or_none()
     post_dict = input.model_dump()
     comments = post_dict.pop("comments")
@@ -72,7 +70,6 @@ async def create_post(
         db.commit()
         for cm in comments:
             try:
-                print("add comment")
                 db_cm = CommentFacebook(
                     content=cm["content"],
                     post_id=post_exist.id,
@@ -89,7 +86,6 @@ async def create_post(
 
     new_post = PostFacebook(
         **post_dict,
-        link_post=group.link + "posts/" + input.uuid_post,
         user_id=user_id,
         group_id=group_id,
         last_sync=datetime.now(),
@@ -202,7 +198,7 @@ class InputPostIdDelete(BaseModel):
 
 
 @router.post("/edit/delete")
-async def edit_deletet_group(
+async def edit_delete_group(
     user_id: UUID,
     group_id: UUID,
     input: InputPostIdDelete,

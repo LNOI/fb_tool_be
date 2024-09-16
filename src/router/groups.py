@@ -5,7 +5,7 @@ from sqlmodel import select
 from pydantic import BaseModel
 from src.utils.db import get_session, Session
 from src.db.groups import GroupFacebook
-from src.utils.redis import delete_cache
+from src.utils.redis import delete_cache, cache_api
 
 router = APIRouter(
     prefix="/user/{user_id}/groups",
