@@ -12,7 +12,7 @@ class PostType(str, Enum):
 class PostFacebook(SQLModel, table=True):
     __tablename__ = "post_facebook"
     id: UUID = Field(default_factory=uuid4, primary_key=True)
-    group_id: UUID = Field(default=None, foreign_key="group_facebook.id")
+    group_id: UUID = Field(default=None, foreign_key="group_facebook.id", nullable=True)
     user_id: UUID
     title: str | None = None
     link_images: str | None = None

@@ -9,9 +9,10 @@ from src.db.comments import CommentFacebook
 from src.utils.db import get_session, Session
 from src.utils.redis import cache_api, delete_cache
 from sqlmodel import select
+from typing import Annotated, Union
 
 router = APIRouter(
-    prefix="/user/{user_id}/groups/{group_id}/posts",
+    prefix="/user/{user_id}",
     tags=["posts"],
 )
 
@@ -38,7 +39,7 @@ class InputPost(BaseModel):
 #     data: list[InputPost] | None = None
 
 
-@router.post("/", status_code=201)
+@router.post("/groups/{group_id}/posts", status_code=201)
 async def create_post(
     user_id: UUID,
     group_id: UUID,
@@ -112,8 +113,7 @@ async def create_post(
     return {"message": "Add post success"}
 
 
-@router.get("/")
-# @cache_api(ex=60)
+@router.get("/groups/{group_id}/posts")
 async def get_posts(
     user_id: UUID,
     group_id: UUID,
@@ -145,7 +145,7 @@ async def get_posts(
     return posts
 
 
-@router.get("/{post_id}")
+@router.get("/groups/{group_id}/posts/{post_id}")
 async def get_post(
     user_id: UUID, group_id: UUID, post_id: UUID, db: Session = Depends(get_session)
 ):
@@ -173,7 +173,7 @@ async def get_post(
     return data
 
 
-@router.delete("/{post_id}")
+@router.delete("/groups/{group_id}/posts/{post_id}")
 async def delete_post(
     user_id: UUID, group_id: UUID, post_id: UUID, db: Session = Depends(get_session)
 ):
@@ -197,7 +197,7 @@ class InputPostIdDelete(BaseModel):
     post_ids: list[UUID] | None = []
 
 
-@router.post("/edit/delete")
+@router.post("/groups/{group_id}/posts/edit/delete")
 async def edit_delete_group(
     user_id: UUID,
     group_id: UUID,
@@ -205,6 +205,7 @@ async def edit_delete_group(
     db: Session = Depends(get_session),
 ):
     db_posts = []
+
     for post_id in input.post_ids:
         post = db.scalars(
             select(PostFacebook).where(
@@ -221,3 +222,60 @@ async def edit_delete_group(
     db.commit()
     delete_cache(f"get_posts-user_id_{user_id}-group_id_{group_id}")
     return {"message": "Delete post success"}
+
+
+@router.get("/posts")
+async def get_posts_with_user_id(
+    user_id: Annotated[UUID, "a uuid"],
+    s: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_session),
+):
+    return db.scalars(
+        select(PostFacebook)
+        .where(PostFacebook.user_id == user_id)
+        .offset(s)
+        .limit(limit)
+        .order_by(PostFacebook.last_sync.desc())
+    ).all()
+
+
+@router.post("/posts/edit/delete")
+async def edit_delete_post_id(
+    user_id: UUID,
+    input: InputPostIdDelete,
+    db: Session = Depends(get_session),
+):
+    db_posts = []
+
+    for post_id in input.post_ids:
+        post = db.scalars(
+            select(PostFacebook).where(
+                PostFacebook.user_id == user_id,
+                PostFacebook.id == post_id,
+            )
+        ).one_or_none()
+        if post is None:
+            continue
+        post.deleted = True
+        db_posts.append(post)
+    db.add_all(db_posts)
+    db.commit()
+
+    return {"message": "Delete post success"}
+
+
+# @router.get("/posts")
+# async def get_posts_with_user_id(
+#     user_id: Annotated[UUID, "a uuid"],
+#     s: int = 0,
+#     limit: int = 100,
+#     db: Session = Depends(get_session),
+# ):
+#     return db.scalars(
+#         select(PostFacebook)
+#         .where(PostFacebook.user_id == user_id)
+#         .offset(s)
+#         .limit(limit)
+#         .order_by(PostFacebook.last_sync.desc())
+#     ).all()
