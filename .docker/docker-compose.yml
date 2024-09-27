@@ -18,46 +18,46 @@ services:
       - "6379:6379"
   ## Traefik
 
-  reverse-proxy:
-    image: traefik:v3.1
-    container_name: main-reverse-proxy
-    restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    ports:
-      - 80:80
-      - 443:443
-      - 9443:9443
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./traefik/static.yml:/etc/traefik/traefik.yml:ro
-      - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
-      - ./certs:/etc/certs
-    command:
-      - "--accesslog=true"
-    networks:
-      - authinator_public
-      - mainlb_priv
-      - social_tool_public
+  # reverse-proxy:
+  #   image: traefik:v3.1
+  #   container_name: main-reverse-proxy
+  #   restart: unless-stopped
+  #   security_opt:
+  #     - no-new-privileges:true
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #     - 9443:9443
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - ./traefik/static.yml:/etc/traefik/traefik.yml:ro
+  #     - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
+  #     - ./certs:/etc/certs
+  #   command:
+  #     - "--accesslog=true"
+  #   networks:
+  #     - authinator_public
+  #     - mainlb_priv
+  #     - social_tool_public
   
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: main-app
-    restart: unless-stopped
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: main-app
+  #   restart: unless-stopped
 
 
-networks:
-  authinator_public:
-    external: true
-  security_public:
-    external: true
-  hygen_public:
-    external: true
-  mainlb_priv:
-    name: mainlb_priv
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.99.0.0/28
+# networks:
+#   authinator_public:
+#     external: true
+#   security_public:
+#     external: true
+#   hygen_public:
+#     external: true
+#   mainlb_priv:
+#     name: mainlb_priv
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 10.99.0.0/28
