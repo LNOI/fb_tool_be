@@ -40,11 +40,6 @@ class InputPostIdDelete(BaseModel):
     post_ids: list[UUID] | None = []
 
 
-# class DataInputPost(BaseModel):
-#     data: list[InputPost] | None = None
-#
-
-
 @router.post("/posts", status_code=201)
 async def create_post(
     user_id: UUID,
@@ -70,10 +65,14 @@ async def create_post(
     ).one_or_none()
     post_dict = input.model_dump()
     comments = post_dict.pop("comments")
+    reaction = int(post_dict.pop("reaction"))
     if post_exist:
+        post_exist.owner_name = post_dict["owner_name"]
+        post_exist.owner_link = post_dict["owner_link"]
         post_exist.link_images = post_dict["link_images"]
         post_exist.title = post_dict["title"]
         post_exist.last_sync = datetime.now()
+        post_exist.number_of_reaction = reaction
         db.add(post_exist)
         db.commit()
         for cm in comments:
@@ -97,6 +96,7 @@ async def create_post(
         **post_dict,
         user_id=user_id,
         last_sync=datetime.now(),
+        number_of_reaction=reaction,
     )
     db.add(new_post)
     db.commit()
@@ -138,6 +138,17 @@ async def get_posts(
         query.offset(page * limit).limit(limit).order_by(PostFacebook.last_sync.desc())
     ).all()
 
+
+@router.get("/posts/{id}")
+async def get_post( user_id: Annotated[UUID, "the uuid"],id: UUID,
+    group_id: Annotated[Union[UUID, None], "ID group of POST"] = None,
+    db: Session = Depends(get_session)
+    ):
+    query = select(PostFacebook).where(PostFacebook.user_id==user_id, PostFacebook.id == id)
+    if group_id:
+        query = query.where(PostFacebook.group_id== group_id)
+    return db.scalars(query).one_or_none()
+    
 
 @router.delete("/posts/edit/delete")
 async def edit_delete_post_id(
