@@ -15,7 +15,7 @@ router = APIRouter(
     prefix="/user/{user_id}",
     tags=["posts"],
 )
-
+    
 
 class CommentPost(BaseModel):
     content: str | None = None
@@ -156,6 +156,17 @@ async def edit_delete_post_id(
     input: InputPostIdDelete,
     db: Session = Depends(get_session),
 ):
+    """
+    Delete a post by user_id and list post_id. Optionally, filter by group ID
+    
+    Args:
+        user_id (UUID): _description_
+        input (InputPostIdDelete): _description_
+        db (Session, optional): _description_. Defaults to Depends(get_session).
+
+    Returns:
+        _type_: _description_
+    """
     db_posts = []
 
     for post_id in input.post_ids:
@@ -173,3 +184,5 @@ async def edit_delete_post_id(
     db.commit()
 
     return {"message": "Delete post success"}
+
+

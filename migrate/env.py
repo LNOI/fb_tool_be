@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 from sqlmodel import SQLModel
-from src.db import comments, groups, messages, posts, users
+from src.domain.model import user_model,comment_model,group_model,message_model,post_model
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

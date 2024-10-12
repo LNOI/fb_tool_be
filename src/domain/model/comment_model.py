@@ -4,7 +4,8 @@ from datetime import datetime
 
 from src.domain.model.base_model import BaseModel
 
-class CommentFacebook(BaseModel, table=True):
+
+class CommentFacebookModel(BaseModel, table=True):
     post_id: UUID = Field(foreign_key="post_facebook.id")
     user_id: UUID
     content: str | None = None
