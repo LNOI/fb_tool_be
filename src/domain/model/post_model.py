@@ -1,14 +1,15 @@
-from uuid import UUID
-from sqlmodel import  Field, Column,Enum,String,ARRAY
-from datetime import datetime
 import enum
+from datetime import datetime
+from uuid import UUID
+
+from sqlmodel import ARRAY, Column, Enum, Field, String
 
 from src.domain.model.base_model import BaseModel
 
 
 class PostType(str, enum.Enum):
-    CRAWL = "crawl"
-    AUTO_POST = "auto_post"
+    CRAWL = "CRAWL"
+    AUTO_POST = "AUTO_POST"
 
 
 class PostModel(BaseModel, table=True):

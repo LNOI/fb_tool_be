@@ -1,6 +1,9 @@
 from typing import Optional
+
 from sqlmodel import Field
-from src.domain.model.base_model import  BaseModel
+
+from src.domain.model.base_model import BaseModel
+
 
 class UserModel(BaseModel, table=True):
     username: str = Field(description="Username")

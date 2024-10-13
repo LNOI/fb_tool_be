@@ -1,5 +1,8 @@
-from pydantic import BaseModel
 from uuid import UUID
+
+from pydantic import BaseModel
+
+
 class CreateGroupRequestDto(BaseModel):
     user_id: UUID
     link_group: str | None = None
@@ -12,7 +15,6 @@ class CreateGroupRequestDto(BaseModel):
     is_member: bool | None = False
     tags: str | None = None
 
+
 class UpdateGroupRequestDto(CreateGroupRequestDto):
     pass
-
-

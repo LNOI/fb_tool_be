@@ -7,14 +7,14 @@ from src.infrastructures.ui.api.common.custom_response import (
     CustomJSONResponse,
     ResponseModel,
 )
-from src.middleware import group_usecase
+from src.middleware import message_usecase
 
 router = APIRouter()
 
 
-@router.delete("/{group_id}", response_model=ResponseModel)
-async def delete_group(user_id: UUID, group_id: UUID):
-    is_deleted = await group_usecase.delete_group(group_id)
+@router.delete("/{message_id}", response_model=ResponseModel)
+async def delete_message(user_id: UUID, message_id: UUID):
+    is_deleted = await message_usecase.delete_message(message_id)
     if not is_deleted:
         return CustomJSONResponse(status_code=status.HTTP_404_NOT_FOUND, data=False)
     return CustomJSONResponse(status_code=status.HTTP_201_CREATED, data=True)

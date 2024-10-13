@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.infrastructures.ui.api.router.group_router import (
+from src.infrastructures.ui.api.router.message_router import (
     create,
     delete,
     get,
@@ -8,7 +8,7 @@ from src.infrastructures.ui.api.router.group_router import (
     update,
 )
 
-router = APIRouter(tags=["Group Router"])
+router = APIRouter(tags=["Message"])
 router.include_router(create.router)
 router.include_router(get.router)
 router.include_router(update.router)

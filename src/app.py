@@ -1,9 +1,9 @@
 from fastapi import FastAPI
-from src.router.groups import router as group_router
-from src.router.base import BASE_ROUTER
 from fastapi.middleware.cors import CORSMiddleware
-from src.router.posts import router as post_router
+
 from src.router.comments import router as comment_router
+from src.router.groups import router as group_router
+from src.router.posts import router as post_router
 
 app = FastAPI()
 

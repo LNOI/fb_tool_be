@@ -1,7 +1,8 @@
-from uuid import UUID
-from typing import  List
-from sqlmodel import Field,ARRAY,String,Column
 from datetime import datetime
+from typing import List
+from uuid import UUID
+
+from sqlmodel import ARRAY, Column, Field, String
 
 from src.domain.model.base_model import BaseModel
 
@@ -14,4 +15,4 @@ class CommentModel(BaseModel, table=True):
     sender_name: str | None = None
     sender_link: str | None = None
     note: str | None = None
-    comment_date: datetime = Field(default_factory=datetime.now,nullable=True)
+    comment_date: datetime = Field(default_factory=datetime.now, nullable=True)

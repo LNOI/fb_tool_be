@@ -1,5 +1,12 @@
 from fastapi import APIRouter
-from src.infrastructures.ui.api.router.user_router import  create,get, update,delete, list
+
+from src.infrastructures.ui.api.router.user_router import (
+    create,
+    delete,
+    get,
+    list,
+    update,
+)
 
 router = APIRouter(tags=["Users"])
 router.include_router(create.router)

@@ -1,7 +1,10 @@
-from uuid import UUID
 from datetime import datetime
+from uuid import UUID
+
 from pydantic import BaseModel
+
 from src.domain.model.post_model import PostType
+
 
 class CreatePostRequestDto(BaseModel):
     group_id: UUID | None = None
@@ -15,6 +18,7 @@ class CreatePostRequestDto(BaseModel):
     post_date: datetime = datetime.now()
     last_sync: datetime = datetime.now()
     type: PostType
+
 
 class UpdatePostRequestDto(CreatePostRequestDto):
     pass

@@ -1,13 +1,15 @@
 from datetime import datetime
 from uuid import UUID
+
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import select
 from pydantic import BaseModel
-from src.utils.db import get_session, Session
+from sqlmodel import select
+
+from src.db.comments import CommentFacebook
 from src.db.groups import GroupFacebook
 from src.db.posts import PostFacebook
 from src.db.users import Users
-from src.db.comments import CommentFacebook
+from src.utils.db import Session, get_session
 
 user_root_id: UUID = "00000000-0000-0000-0000-000000000000"
 

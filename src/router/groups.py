@@ -1,11 +1,13 @@
 from datetime import datetime
 from uuid import UUID
+
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import select
 from pydantic import BaseModel
-from src.utils.db import get_session, Session
+from sqlmodel import select
+
 from src.db.groups import GroupFacebook
-from src.utils.redis import delete_cache, cache_api
+from src.utils.db import Session, get_session
+from src.utils.redis import cache_api, delete_cache
 
 router = APIRouter(
     prefix="/user/{user_id}/groups",

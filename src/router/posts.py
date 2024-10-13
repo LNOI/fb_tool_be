@@ -1,21 +1,23 @@
-from fastapi import APIRouter, Depends, HTTPException
-from uuid import UUID
 from datetime import datetime
+from typing import Annotated, Union
+from uuid import UUID
+
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from sqlmodel import select
+
+from src.db.comments import CommentFacebook
+from src.db.groups import GroupFacebook
 from src.db.posts import PostFacebook
 from src.db.users import Users
-from src.db.groups import GroupFacebook
-from src.db.comments import CommentFacebook
-from src.utils.db import get_session, Session
+from src.utils.db import Session, get_session
 from src.utils.redis import cache_api, delete_cache
-from sqlmodel import select
-from typing import Annotated, Union
 
 router = APIRouter(
     prefix="/user/{user_id}",
     tags=["posts"],
 )
-    
+
 
 class CommentPost(BaseModel):
     content: str | None = None
@@ -140,15 +142,19 @@ async def get_posts(
 
 
 @router.get("/posts/{id}")
-async def get_post( user_id: Annotated[UUID, "the uuid"],id: UUID,
+async def get_post(
+    user_id: Annotated[UUID, "the uuid"],
+    id: UUID,
     group_id: Annotated[Union[UUID, None], "ID group of POST"] = None,
-    db: Session = Depends(get_session)
-    ):
-    query = select(PostFacebook).where(PostFacebook.user_id==user_id, PostFacebook.id == id)
+    db: Session = Depends(get_session),
+):
+    query = select(PostFacebook).where(
+        PostFacebook.user_id == user_id, PostFacebook.id == id
+    )
     if group_id:
-        query = query.where(PostFacebook.group_id== group_id)
+        query = query.where(PostFacebook.group_id == group_id)
     return db.scalars(query).one_or_none()
-    
+
 
 @router.delete("/posts/edit/delete")
 async def edit_delete_post_id(
@@ -158,7 +164,7 @@ async def edit_delete_post_id(
 ):
     """
     Delete a post by user_id and list post_id. Optionally, filter by group ID
-    
+
     Args:
         user_id (UUID): _description_
         input (InputPostIdDelete): _description_
@@ -184,5 +190,3 @@ async def edit_delete_post_id(
     db.commit()
 
     return {"message": "Delete post success"}
-
-

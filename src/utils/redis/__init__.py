@@ -1,8 +1,9 @@
-import redis
-from functools import wraps
 import json
-from uuid import UUID
 from datetime import datetime
+from functools import wraps
+from uuid import UUID
+
+import redis
 
 r = redis.Redis(host="localhost", port=6379, db=0)
 

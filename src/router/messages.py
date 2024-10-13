@@ -1,12 +1,13 @@
-from uuid import uuid1, UUID
+from uuid import UUID, uuid1
+
 from fastapi import APIRouter, Depends
+from pydantic import BaseModel
+from sqlmodel import select
+
 from src.db.messages import MessagesFacebook, TemplateMessage
 
 # from src.db.users import Users
-from src.utils.db import get_session, Session
-from sqlmodel import select
-from pydantic import BaseModel
-
+from src.utils.db import Session, get_session
 
 router = APIRouter(prefix="/user/{user_id}/messages", tags=["messages"])
 

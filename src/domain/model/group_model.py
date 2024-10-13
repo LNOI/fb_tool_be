@@ -1,6 +1,8 @@
-from uuid import UUID
-from sqlmodel import  Relationship
 from datetime import datetime
+from uuid import UUID
+
+from sqlmodel import Relationship
+
 from src.domain.model.base_model import BaseModel
 from src.domain.model.post_model import PostModel
 

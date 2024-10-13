@@ -1,12 +1,15 @@
+import json
+from datetime import date, datetime
 from email.policy import default
 from typing import Any, Dict, Generic, Optional, TypeVar
-from datetime import date, datetime
+
+from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from starlette import status
-from fastapi.encoders import jsonable_encoder
-import json
+
 T = TypeVar("T")
+
 
 class ResponseModel(BaseModel, Generic[T]):
     data: Optional[T] = Field(None, description="Data of the response")
@@ -17,7 +20,8 @@ def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
-    raise TypeError ("Type %s not serializable" % type(obj))
+    raise TypeError("Type %s not serializable" % type(obj))
+
 
 class CustomJSONResponse(JSONResponse):
     def __init__(
@@ -31,6 +35,7 @@ class CustomJSONResponse(JSONResponse):
             message=message if message else None,
         ).model_dump(exclude_none=True)
         super().__init__(content=jsonable_encoder(content), status_code=status_code)
+
 
 def success_response(
     message: str = "success", data: Any = None, status_code: int = status.HTTP_200_OK
