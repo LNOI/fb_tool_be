@@ -14,6 +14,7 @@ def snake_case(string:str) ->str:
 class BaseModel(SQLModel):
     id : UUID = Field(default_factory=uuid4, primary_key=True, nullable=False)
     created_at : datetime = Field(default_factory=datetime.now)
+    updated_at : datetime = Field(default_factory=datetime.now,nullable=True)
     deleted_at : datetime | None = Field(default=None)
 
     @declared_attr

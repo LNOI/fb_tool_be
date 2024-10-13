@@ -40,7 +40,7 @@ class FacebookDBRepository(DBRepository):
         return items
 
     @wrapper_session
-    async def delete_item(self, uuid: UUID, model: T, session: Session) -> bool:
+    async def delete_item(self, model: T, uuid: UUID, session: Session) -> bool:
         record: T = session.scalars(select(model).where(model.id == uuid,model.deleted_at.is_(None))).one_or_none()
         if record:
             record.deleted_at = datetime.now(timezone.utc)
@@ -57,7 +57,7 @@ class FacebookDBRepository(DBRepository):
         return item
 
     @wrapper_session
-    async def get_item(self, uuid: UUID, model : T, session: Session) -> T:
+    async def get_item(self, model : T,uuid:UUID, session: Session) -> T:
         query = select(model).where(model.id == uuid).where(model.deleted_at.is_(None))
         return session.scalars(query).one_or_none()
 

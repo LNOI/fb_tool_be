@@ -1,17 +1,17 @@
-from uuid import UUID, uuid4
-from sqlmodel import SQLModel, Field
+from uuid import UUID
+from typing import  List
+from sqlmodel import Field,ARRAY,String,Column
 from datetime import datetime
 
 from src.domain.model.base_model import BaseModel
 
 
-class CommentFacebookModel(BaseModel, table=True):
-    post_id: UUID = Field(foreign_key="post_facebook.id")
+class CommentModel(BaseModel, table=True):
+    post_id: UUID = Field(foreign_key="post.id")
     user_id: UUID
     content: str | None = None
-    images: str | None = None
+    images: list[str] | None = Field(sa_column=Column(ARRAY(String)))
     sender_name: str | None = None
     sender_link: str | None = None
     note: str | None = None
-    comment_date: str | None = None
-    last_sync: datetime | None = None
+    comment_date: datetime = Field(default_factory=datetime.now,nullable=True)

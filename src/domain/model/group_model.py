@@ -1,11 +1,11 @@
-from uuid import UUID, uuid4
-from sqlmodel import SQLModel, Field, Relationship
+from uuid import UUID
+from sqlmodel import  Relationship
 from datetime import datetime
-from src.db.posts import PostFacebook
 from src.domain.model.base_model import BaseModel
+from src.domain.model.post_model import PostModel
 
 
-class GroupFacebook(BaseModel, table=True):
+class GroupModel(BaseModel, table=True):
     user_id: UUID
     link_group: str | None = None
     name: str
@@ -17,5 +17,4 @@ class GroupFacebook(BaseModel, table=True):
     is_member: bool | None = False
     tags: str | None = None
     last_sync: datetime | None = None
-    deleted: bool | None = False
-    posts: list[PostFacebook] = Relationship()
+    posts: list[PostModel] = Relationship()
