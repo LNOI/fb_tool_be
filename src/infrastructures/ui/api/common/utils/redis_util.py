@@ -1,9 +1,9 @@
 import json
-from datetime import datetime
+from datetime import datetime,timedelta
 from functools import wraps
 from uuid import UUID
-
 import redis
+from typing import Any
 
 r = redis.Redis(host="localhost", port=6379, db=0)
 
@@ -39,8 +39,14 @@ def cache_api(ex: int = 30):
     return wrapper
 
 
-# delete key cache
+def set_cache(key:str, value: Any,ex:float= 3600)->None:
+    r.set(key, json.dumps(value), ex=timedelta(seconds=ex))
 
+def get_cache(key:str)->str | None:
+    v = r.get(key)
+    if v:
+        return json.loads(v)
+    return None
 
-def delete_cache(key):
+def delete_cache(key)->None:
     r.delete(key)

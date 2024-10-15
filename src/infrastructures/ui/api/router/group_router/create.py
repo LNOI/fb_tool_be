@@ -16,6 +16,6 @@ router = APIRouter()
 
 @router.post("/", response_model=ResponseModel)
 async def create_group(user_id: UUID, group: CreateGroupRequestDto):
-    item: GroupModel = GroupModel(**group.model_dump())
+    item: GroupModel = GroupModel(**group.model_dump(),user_id=user_id)
     result = await group_usecase.create_group(item)
     return CustomJSONResponse(status_code=status.HTTP_201_CREATED, data=result)

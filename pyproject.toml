@@ -21,6 +21,9 @@ dependencies = [
     "isort>=5.13.2",
     "pytest>=8.3.3",
     "injector>=0.22.0",
+    "pyjwt>=2.9.0",
+    "boto3>=1.35.40",
+    "boto3-stubs[essential]>=1.35.40",
 ]
 readme = "README.md"
 requires-python = ">= 3.12"

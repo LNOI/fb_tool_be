@@ -7,10 +7,12 @@ from src.infrastructures.ui.api.router import (
     message_router,
     post_router,
     user_router,
+auth_router
 )
 
 router = APIRouter()
 router.include_router(health_check.router)
+router.include_router(auth_router.router)
 router.include_router(user_router.router, prefix="/user")
 
 PREFIX_USER = "/user/{user_id}"

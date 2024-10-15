@@ -19,6 +19,7 @@ router = APIRouter()
 async def list_post(user_id: UUID, page: int = 1, page_size: int = 25):
     query = (
         select(PostModel)
+        .where(PostModel.user_id == user_id)
         .where(PostModel.deleted_at.is_(None))
         .limit(page_size)
         .offset((page - 1) * page_size)

@@ -19,6 +19,7 @@ router = APIRouter()
 async def list_message(user_id: UUID, page: int = 1, page_size: int = 25):
     query = (
         select(MessageModel)
+        .where(MessageModel.user_id == user_id)
         .limit(page_size)
         .offset((page - 1) * page_size)
         .order_by(MessageModel.created_at.desc())

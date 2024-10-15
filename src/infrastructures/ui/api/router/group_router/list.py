@@ -19,6 +19,7 @@ router = APIRouter()
 async def list_group(user_id: UUID, page: int = 1, page_size: int = 25):
     query = (
         select(GroupModel)
+        .where(GroupModel.user_id == user_id)
         .where(GroupModel.deleted_at.is_(None))
         .limit(page_size)
         .offset((page - 1) * page_size)
