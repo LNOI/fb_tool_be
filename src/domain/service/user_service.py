@@ -26,5 +26,8 @@ class UserService:
     async def delete_user(self, user_id: UUID) -> bool:
         return await self.db_repository.delete_item(UserModel, user_id)
 
-    async def query_users(self, filter_query: Select) -> List[UserModel]:
+    async def query_user(self, filter_query: Select) -> List[UserModel]:
         return await self.db_repository.query_item(filter_query)
+
+    async def query_users(self, filter_query: Select) -> List[UserModel]:
+        return await self.db_repository.query_items(filter_query)

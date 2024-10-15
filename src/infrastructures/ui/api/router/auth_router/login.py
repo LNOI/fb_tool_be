@@ -1,6 +1,8 @@
 from black import datetime
 from fastapi import APIRouter, Depends, HTTPException, Request,Security
 from uuid import UUID
+
+
 from starlette import status
 from typing import Dict
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm, SecurityScopes
@@ -10,6 +12,7 @@ from src.infrastructures.ui.api.common.custom_response import (
     CustomJSONResponse,
     ResponseModel,
 )
+from sqlmodel import select
 from src.infrastructures.ui.api.common.utils.redis_util import set_cache, get_cache
 from src.middleware import user_usecase
 
@@ -28,14 +31,18 @@ async def validate_access_token(token:str):
 #     if scope not in user_scope:
 #
 
-async def validate_user(security_scopes: SecurityScopes, request: Request,token: str = Depends(oauth2_scheme)):
-    credentials_exception = HTTPException(
+# mainrole:subrole:read write update delete
+# user root
+credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
-    )
+)
+
+async def validate_user(security_scopes: SecurityScopes, request: Request, token: str = Depends(oauth2_scheme)):
     if "user_id" in request.path_params:
         v = get_cache(f"user:{request.path_params.get('user_id')}")
+        user = None
         if v is None:
             response = await validate_access_token(token)
             if response.status_code != 200:
@@ -53,28 +60,34 @@ async def validate_user(security_scopes: SecurityScopes, request: Request,token:
             }
             set_cache(f"user:{request.path_params.get('user_id')}", data,resp["expires_in"])
 
-            if security_scopes.scopes[0] in user.scopes or security_scopes.scopes[0] in ["global"] :
+        if any([scope in security_scopes.scopes for scope in user.scopes]):
                 return None
-        elif v["access_token"] == token:
-            if security_scopes.scopes[0] in v["user"]["scopes"] or security_scopes.scopes[0] in ["global"]:
-                return None
-
     else:
         response = await validate_access_token(token)
         if response.status_code != 200:
             raise credentials_exception
-        data = response.json()
-        data["access_token"] = token
-        return data
-
+        email = request.query_params.get("email")
+        query = select(UserModel).where(UserModel.email == email)
+        user : UserModel = await user_usecase.query_user(query)
+        if user is None:
+            raise credentials_exception
+        if "admin" in user.scopes:
+            return None
     raise credentials_exception
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    response = await validate_access_token(token)
+    if response.status_code != 200:
+        raise credentials_exception
+    data = response.json()
+    data["access_token"] = token
+    return data
 
 
 @router.post("/first_login", response_model=ResponseModel)
-async def first_login(user: CreateUserRequestDto, current_user: Dict = Security(validate_user,scopes=["global"])):
+async def first_login(user: CreateUserRequestDto, current_user: Dict = Depends(get_current_user)):
     if current_user["email"] != user.email:
         return CustomJSONResponse(status_code=status.HTTP_401_UNAUTHORIZED)
-
 
     user_exists = await user_usecase.get_user(user_id=user.id)
     data = {
@@ -86,7 +99,6 @@ async def first_login(user: CreateUserRequestDto, current_user: Dict = Security(
     if user_exists:
         data["user"]["scopes"] = user_exists.scopes
         set_cache(f"user:{user.id}", data,ex=current_user["expires_in"])
-        # set access_token to redis with key user:id = access_token
         return CustomJSONResponse(
             status_code=status.HTTP_200_OK,
             message="User already exists"
@@ -96,8 +108,3 @@ async def first_login(user: CreateUserRequestDto, current_user: Dict = Security(
     data["user"]["scopes"] = result.scopes
     set_cache(f"user:{user.id}", data, ex=current_user["expires_in"])
     return CustomJSONResponse(status_code=status.HTTP_201_CREATED, data=result)
-
-
-@router.get("/check/{user_id}", response_model=ResponseModel,dependencies=[Security(validate_user,scopes=["global"])])
-async def get_us(user_id:UUID):
-    return CustomJSONResponse(status_code=status.HTTP_200_OK,data={"user_id":user_id})

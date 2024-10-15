@@ -12,7 +12,8 @@ services:
       - /Users/nguyenthanhloi/Documents/storage/db_tool_fb_prd:/var/lib/postgresql/data
   
   redis_fb:
-    image: redis:latest
+    image: redis/redis-stack:latest
     container_name: redis_fb
     ports:
       - "6379:6379"
+      - "8888:8001"
