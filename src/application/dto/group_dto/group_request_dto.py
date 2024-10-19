@@ -4,9 +4,8 @@ from pydantic import BaseModel
 
 
 class CreateGroupRequestDto(BaseModel):
-    user_id: UUID
-    link_group: str | None = None
     name: str
+    link_group: str | None = None
     description: str | None = None
     privacy: str  # Công khai | Riêng tư
     members: str  # 69K thành viên  | split  69k
@@ -14,7 +13,6 @@ class CreateGroupRequestDto(BaseModel):
     user_admin: str | None = None
     is_member: bool | None = False
     tags: str | None = None
-
 
 class UpdateGroupRequestDto(CreateGroupRequestDto):
     pass

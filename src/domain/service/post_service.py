@@ -27,4 +27,4 @@ class PostService:
         return await self.db_repository.delete_item(PostModel, post_id)
 
     async def query_posts(self, filter_query: Select) -> List[PostModel]:
-        return await self.db_repository.query_item(filter_query)
+        return await self.db_repository.query_items(filter_query)

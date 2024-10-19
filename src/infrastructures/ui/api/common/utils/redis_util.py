@@ -1,5 +1,5 @@
 import json
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from functools import wraps
 from uuid import UUID
 import redis
@@ -39,14 +39,16 @@ def cache_api(ex: int = 30):
     return wrapper
 
 
-def set_cache(key:str, value: Any,ex:float= 3600)->None:
+def set_cache(key: str, value: Any, ex: float = 3600) -> None:
     r.set(key, json.dumps(value), ex=timedelta(seconds=ex))
 
-def get_cache(key:str)->str | None:
+
+def get_cache(key: str) -> str | None:
     v = r.get(key)
     if v:
         return json.loads(v)
     return None
 
-def delete_cache(key)->None:
+
+def delete_cache(key) -> None:
     r.delete(key)

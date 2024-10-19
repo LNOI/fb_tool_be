@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class CreateUserRequestDto(BaseModel):
-    id : UUID
+    id: UUID
     name: str
     email: str
     avatar: Optional[str]
@@ -14,6 +14,5 @@ class CreateUserRequestDto(BaseModel):
 
 class UpdateUserRequestDto(BaseModel):
     name: Optional[str]
-    email: Optional[str]
     avatar: Optional[str]
     is_active: bool = True

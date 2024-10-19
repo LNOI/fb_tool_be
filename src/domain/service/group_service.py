@@ -26,4 +26,4 @@ class GroupFacebookService:
         return await self.db_repository.delete_item(GroupModel, group_id)
 
     async def query_groups(self, filter_query: Select) -> List[GroupModel]:
-        return await self.db_repository.query_item(filter_query)
+        return await self.db_repository.query_items(filter_query)

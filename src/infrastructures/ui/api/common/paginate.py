@@ -8,16 +8,10 @@ T = TypeVar("T", bound=BaseModel)
 
 
 def paginate(items: List[T], page: int, page_size: int) -> PaginatedDataModel[T]:
-    start = (page - 1) * page_size
-    end = start + page_size
-
-    total_items = len(items)
-    total_pages = ceil(total_items / page_size)
-
     return PaginatedDataModel(
-        items=items[start:end],
-        total=total_items,
+        items=items,
+        total=len(items),
         page=page,
         page_size=page_size,
-        total_pages=total_pages,
+        total_pages=0,
     )

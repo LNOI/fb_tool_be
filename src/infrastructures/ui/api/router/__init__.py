@@ -7,7 +7,7 @@ from src.infrastructures.ui.api.router import (
     message_router,
     post_router,
     user_router,
-auth_router
+    auth_router,
 )
 
 router = APIRouter()

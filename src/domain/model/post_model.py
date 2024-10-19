@@ -18,9 +18,10 @@ class PostModel(BaseModel, table=True):
     title: str | None = None
     link_images: list[str] | None = Field(sa_column=Column(ARRAY(String)))
     link_post: str | None = None
-    number_of_reaction: int | None = 0
+    reaction: int | None = 0
     owner_name: str | None = None
     owner_link: str | None = None
     post_date: datetime | None = None
     last_sync: datetime | None = None
+    comments: list[str]  = Field(sa_column=Column(ARRAY(String)),default=[])
     type: PostType = Field(sa_column=Column(Enum(PostType)))

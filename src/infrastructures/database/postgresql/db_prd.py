@@ -74,6 +74,6 @@ class FacebookDBRepository(DBRepository):
 
     @wrapper_session
     async def query_items(
-            self, filter_query: Select, session: Session = None
+        self, filter_query: Select, session: Session = None
     ) -> List[T]:
         return session.scalars(filter_query).all()

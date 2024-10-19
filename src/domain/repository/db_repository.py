@@ -35,9 +35,5 @@ class DBRepository(ABC, Generic[T]):
         raise NotImplementedError()
 
     @abstractmethod
-    async def query_items(
-            self, filter_query: Select
-    ) -> List[T]:
+    async def query_items(self, filter_query: Select) -> List[T]:
         raise NotImplementedError()
-
-
