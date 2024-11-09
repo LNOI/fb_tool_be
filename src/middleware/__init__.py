@@ -8,6 +8,7 @@ from src.application.usecase.group_usecase import GroupFacebookUseCase
 from src.application.usecase.message_usecase import MessageUseCase
 from src.application.usecase.post_usecase import PostUseCase
 from src.application.usecase.user_usecase import UserUseCase
+from src.application.usecase.history_scrape_usecase import HistoryScrapeUseCase
 from src.infrastructures.settings import config
 from src.middleware.di import ApplicationModule, ApplicationTestModule
 
@@ -19,3 +20,4 @@ group_usecase = injector.get(GroupFacebookUseCase)
 post_usecase = injector.get(PostUseCase)
 message_usecase = injector.get(MessageUseCase)
 comment_usecase = injector.get(CommentUseCase)
+hc_usecase = injector.get(HistoryScrapeUseCase)

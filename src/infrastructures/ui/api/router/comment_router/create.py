@@ -13,9 +13,8 @@ from src.middleware import comment_usecase
 
 router = APIRouter()
 
-
 @router.post("/", response_model=ResponseModel)
 async def create_comment(user_id: UUID, comment: CreateCommentRequestDto):
-    item: CommentModel = CommentModel(**comment.model_dump())
+    item = CommentModel(**comment.model_dump(), user_id=user_id)
     result = await comment_usecase.create_comment(item)
     return CustomJSONResponse(status_code=status.HTTP_201_CREATED, data=result)

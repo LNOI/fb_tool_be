@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 from functools import wraps
-from typing import Any, Dict, List, TypeVar
+from typing import List, TypeVar
 from uuid import UUID
 
-from sqlmodel import Session, SQLModel, create_engine, select
+from sqlmodel import Session, create_engine, select
 from sqlmodel.sql._expression_select_cls import Select
 
 from src.domain.model.base_model import BaseModel

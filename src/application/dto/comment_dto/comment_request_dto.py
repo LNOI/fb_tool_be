@@ -1,11 +1,13 @@
 from typing import List
+from uuid import UUID 
 
-from black import datetime
+from datetime import datetime
 from pydantic import BaseModel, Field
 
 
 class CreateCommentRequestDto(BaseModel):
-    content: str | None = None
+    post_id: UUID
+    content_comment: str | None = None
     images: List[str] | None = None
     sender_name: str
     sender_link: str

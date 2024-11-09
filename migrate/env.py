@@ -10,6 +10,7 @@ from src.domain.model import (
     message_model,
     post_model,
     user_model,
+    history_scrape_model,
 )
 
 # this is the Alembic Config object, which provides

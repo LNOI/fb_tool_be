@@ -8,6 +8,7 @@ from src.infrastructures.ui.api.router import (
     post_router,
     user_router,
     auth_router,
+    history_scrape_router
 )
 
 router = APIRouter()
@@ -20,3 +21,4 @@ router.include_router(group_router.router, prefix=PREFIX_USER + "/group")
 router.include_router(post_router.router, prefix=PREFIX_USER + "/post")
 router.include_router(message_router.router, prefix=PREFIX_USER + "/message")
 router.include_router(comment_router.router, prefix=PREFIX_USER + "/comment")
+router.include_router(history_scrape_router.router, prefix=PREFIX_USER + "/history-scrape")

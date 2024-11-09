@@ -19,4 +19,5 @@ class GroupModel(BaseModel, table=True):
     is_member: bool | None = False
     tags: str | None = None
     last_sync: datetime | None = None
+    session_id : str | None = None
     posts: list[PostModel] = Relationship()
