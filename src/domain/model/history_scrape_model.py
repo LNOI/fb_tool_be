@@ -1,6 +1,7 @@
 from uuid import UUID
-from sqlmodel import Field, ARRAY, Column, String
+from sqlmodel import Field, ARRAY, Column, String,Relationship
 from src.domain.model.base_model import BaseModel
+from typing import List
 from enum import Enum
 
 class StatusScrape(str, Enum):
@@ -12,7 +13,8 @@ class StatusScrape(str, Enum):
 
 class HistoryScrapeModel(BaseModel, table=True):
     user_id: UUID
-    list_group: list[UUID] = Field(sa_column=Column(ARRAY(String)),default=[])
-    list_post: list[UUID] = Field(sa_column=Column(ARRAY(String)),default=[])
+    keyword: str | None = None  
+    list_group: List["GroupModel"] = Relationship(back_populates="history_scrape")
+    list_post: List["PostModel"] = Relationship(back_populates="history_scrape")
     status: StatusScrape = Field(default=StatusScrape.START)
     

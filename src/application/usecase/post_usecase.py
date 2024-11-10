@@ -26,3 +26,8 @@ class PostUseCase:
 
     async def query_post(self, filter_query: Select):
         return await self._post_service.query_posts(filter_query)
+    
+    async def query_posts(self, filter_query: Select):
+        return await self._post_service.query_posts(filter_query)
+    
+    

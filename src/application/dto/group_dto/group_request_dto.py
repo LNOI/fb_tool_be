@@ -13,6 +13,7 @@ class CreateGroupRequestDto(BaseModel):
     user_admin: str | None = None
     is_member: bool | None = False
     tags: str | None = None
+    hc_id: UUID | None = None
 
 class UpdateGroupRequestDto(CreateGroupRequestDto):
     pass

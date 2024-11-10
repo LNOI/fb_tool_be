@@ -26,3 +26,6 @@ class GroupFacebookUseCase:
 
     async def query_group(self, filter_query: Select):
         return await self._group_service.query_groups(filter_query)
+    
+    async def query_groups(self, filter_query: Select):
+        return await self._group_service.query_groups(filter_query)

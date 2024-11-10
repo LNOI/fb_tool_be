@@ -15,3 +15,5 @@ class CommentModel(BaseModel, table=True):
     sender_link: str | None = None
     note: str | None = None
     comment_date: datetime = Field(default_factory=datetime.now, nullable=True)
+
+

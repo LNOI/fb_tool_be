@@ -5,7 +5,14 @@ from sqlmodel import Relationship,Field
 
 from src.domain.model.base_model import BaseModel
 from src.domain.model.post_model import PostModel
+from src.domain.model.history_scrape_model import HistoryScrapeModel
+from enum import Enum
 
+class StatusGroupScrape(str,Enum):
+    PENDING = "pending"
+    PROCESSING = "processing"
+    COMPLETED = "completed"
+    
 
 class GroupModel(BaseModel, table=True):
     user_id: UUID
@@ -20,4 +27,8 @@ class GroupModel(BaseModel, table=True):
     tags: str | None = None
     last_sync: datetime | None = None
     session_id : str | None = None
+    status : StatusGroupScrape = Field(default=StatusGroupScrape.PENDING)
+    hc_id : UUID = Field(foreign_key="history_scrape.id",default=None,nullable=True)
+    history_scrape: HistoryScrapeModel = Relationship(back_populates="list_group")
     posts: list[PostModel] = Relationship()
+    

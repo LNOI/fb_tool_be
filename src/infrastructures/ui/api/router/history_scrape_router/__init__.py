@@ -4,7 +4,7 @@ from src.infrastructures.ui.api.router.history_scrape_router import (
     create,
     get,
     update,
-    list,
+    list,   
 )
 
 router = APIRouter(tags=["History Scrape Router"])

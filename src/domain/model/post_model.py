@@ -3,8 +3,9 @@ from datetime import datetime
 from uuid import UUID
 
 from sqlmodel import ARRAY, Column, Enum, Field, String
-
+from sqlmodel import Relationship,Field
 from src.domain.model.base_model import BaseModel
+from src.domain.model.history_scrape_model import HistoryScrapeModel 
 
 
 class PostType(str, enum.Enum):
@@ -25,3 +26,5 @@ class PostModel(BaseModel, table=True):
     last_sync: datetime | None = None
     comments: list[str]  = Field(sa_column=Column(ARRAY(String)),default=[])
     type: PostType = Field(sa_column=Column(Enum(PostType)))
+    hc_id : UUID = Field(foreign_key="history_scrape.id",default=None,nullable=True)
+    history_scrape : HistoryScrapeModel = Relationship(back_populates="list_post")
