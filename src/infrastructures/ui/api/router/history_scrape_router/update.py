@@ -23,7 +23,6 @@ async def update_hc(
     user_id: UUID, hc_id: UUID, history_scrape: UpdateHistoryScrapeRequestDto
 ):
     hc = await hc_usecase.get_history(hc_id)
-    
     if hc is None:
         return CustomJSONResponse(
             status_code=status.HTTP_404_NOT_FOUND, message="History Scrape not found"

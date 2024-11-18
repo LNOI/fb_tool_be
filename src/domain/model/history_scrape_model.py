@@ -1,20 +1,18 @@
 from uuid import UUID
-from sqlmodel import Field, ARRAY, Column, String,Relationship
-from src.domain.model.base_model import BaseModel
-from typing import List
-from enum import Enum
 
-class StatusScrape(str, Enum):
-    GROUP = "group"
-    POST = "post"
-    START = "start"
-    FAILED = "failed"
-    SUCCESS = "success"
+from sqlmodel import  Relationship,Field
+
+from src.domain.model.base_model import BaseModel
 
 class HistoryScrapeModel(BaseModel, table=True):
     user_id: UUID
-    keyword: str | None = None  
-    list_group: List["GroupModel"] = Relationship(back_populates="history_scrape")
-    list_post: List["PostModel"] = Relationship(back_populates="history_scrape")
-    status: StatusScrape = Field(default=StatusScrape.START)
-    
+    keyword: str
+    num_groups :int = Field(default=0, nullable=True)
+    num_posts : int = Field(default=0, nullable=True)
+    num_comments : int = Field(default=0, nullable=True)
+    groups : list["GroupModel"] = Relationship(back_populates="hc_scrape")
+    posts: list["PostModel"] = Relationship(back_populates="hc_scrape")
+    comments :  list["CommentModel"] = Relationship(back_populates="hc_scrape")
+
+
+

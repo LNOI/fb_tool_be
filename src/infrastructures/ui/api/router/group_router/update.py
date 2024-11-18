@@ -17,7 +17,7 @@ router = APIRouter()
 @router.put(
     "/{group_id}",
     response_model=ResponseModel,
-    dependencies=[Security(validate_user, scopes=["group"])],
+    # dependencies=[Security(validate_user, scopes=["group"])],
 )
 async def update_group(
     user_id: UUID, group_id: UUID, group_update: UpdateGroupRequestDto

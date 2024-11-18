@@ -1,22 +1,20 @@
-from datetime import datetime
 from uuid import UUID
 from typing import Union
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-from src.domain.model.post_model import PostType
 
 
 class CreatePostRequestDto(BaseModel):
     group_id: UUID | None = None
-    title: str = ""
-    link_images: list[str] = []
-    link_post: str
-    owner_link: str
-    reaction: Union[int, str] = 0
+    title: str | None = None
+    link: str
+    images: list[str] = Field(default=[])
     owner_name: str
+    owner_link: str
+    reaction: int | None = None
+    comments: list[dict] = Field(default=[])
     post_date: int = 0
-    type: PostType
-    comments: list[str] = []
+    hc_id :UUID
 
 class UpdatePostRequestDto(CreatePostRequestDto):
     pass

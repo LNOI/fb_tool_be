@@ -16,7 +16,7 @@ router = APIRouter()
 @router.delete(
     "/{group_id}",
     response_model=ResponseModel,
-    dependencies=[Security(validate_user, scopes=["group"])],
+    # dependencies=[Security(validate_user, scopes=["group"])],
 )
 async def delete_group(user_id: UUID, group_id: UUID):
     is_deleted = await group_usecase.delete_group(group_id)

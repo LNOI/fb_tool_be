@@ -9,7 +9,7 @@ services:
     ports:
       - "5445:5432"
     volumes:
-      - /Users/nguyenthanhloi/Documents/storage/db_tool_fb_prd:/var/lib/postgresql/data
+      - /Users/nguyenthanhloi/Documents/storage/db_tool:/var/lib/postgresql/data
   
   redis_fb:
     image: redis/redis-stack:latest

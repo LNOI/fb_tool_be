@@ -25,13 +25,18 @@ router = APIRouter()
 )
 async def get_hc(user_id: UUID, hc_id: UUID):
     select_query = select(HistoryScrapeModel).options(
-            selectinload(HistoryScrapeModel.list_group)
+            selectinload(HistoryScrapeModel.groups)
         ).options(
-            selectinload(HistoryScrapeModel.list_post)
+            selectinload(HistoryScrapeModel.posts)
+
+        ).options(
+            selectinload(HistoryScrapeModel.comments)
+
         ).where(HistoryScrapeModel.user_id == user_id, HistoryScrapeModel.id == hc_id)
     result = await hc_usecase.query_histories(filter_query=select_query)
-    
+
     resp = HistoryScrapeResponseDto(**result[0].model_dump(exclude=None))
-    resp.list_group = [ group for group in result[0].list_group]
-    resp.list_post = [ post for post in result[0].list_post]    
+    resp.groups = [ group for group in result[0].groups]
+    resp.posts = [ post for post in result[0].posts]
+    resp.comments =[comment for comment in result[0].comments]
     return CustomJSONResponse(status_code=status.HTTP_200_OK, data=resp)  

@@ -1,12 +1,15 @@
 from uuid import UUID
-from src.domain.model.history_scrape_model import StatusScrape
 from pydantic import BaseModel
 
     
 class CreateHistoryScrapeRequestDto(BaseModel):
     keyword : str
+    num_groups: int
+    num_posts : int
+    num_comments: int
 
 class UpdateHistoryScrapeRequestDto(BaseModel):
-    status : StatusScrape
-    list_group: list[UUID] | None = None
-    list_post: list[UUID] | None = None
+    keyword: str
+    num_groups: int
+    num_posts: int
+    num_comments: int

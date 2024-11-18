@@ -7,12 +7,12 @@ from pydantic import BaseModel, Field
 
 class CreateCommentRequestDto(BaseModel):
     post_id: UUID
-    content_comment: str | None = None
+    content: str | None = None
     images: List[str] | None = None
-    sender_name: str
-    sender_link: str
+    owner_name: str
+    owner_link: str
     comment_date: datetime | None = None
-
+    hc_id: UUID
 
 class UpdateCommentRequestDto(CreateCommentRequestDto):
     pass

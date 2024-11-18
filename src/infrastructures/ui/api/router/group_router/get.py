@@ -16,7 +16,7 @@ router = APIRouter()
 @router.get(
     "/{group_id}",
     response_model=ResponseModel,
-    dependencies=[Security(validate_user, scopes=["group"])],
+    # dependencies=[Security(validate_user, scopes=["group"])],
 )
 async def get_group(user_id: UUID, group_id: UUID):
     group = await group_usecase.get_group(group_id)

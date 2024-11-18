@@ -16,15 +16,17 @@ router = APIRouter()
 
 
 @router.get("/", response_model=ResponseModel)
-async def list_post(user_id: UUID, page: int = 1, page_size: int = 25):
+async def list_post(user_id: UUID,hc_id: UUID, page: int = 1, page_size: int = 25):
     query = (
         select(PostModel)
         .where(PostModel.user_id == user_id)
         .where(PostModel.deleted_at.is_(None))
-        .offset((page - 1) * page_size)
-        .limit(page_size)
-        .order_by(PostModel.created_at.desc())
     )
+    if hc_id:
+        query = query.where(PostModel.hc_id == hc_id)
+        
+    query = query.offset((page - 1) * page_size).limit(page_size).order_by(PostModel.created_at.desc())
+    
     result = await post_usecase.query_post(filter_query=query)
 
     result = paginate(

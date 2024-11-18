@@ -20,7 +20,7 @@ router = APIRouter()
 @router.get(
     "/",
     response_model=ResponseModel,
-    dependencies=[Security(validate_user, scopes=["group"])],
+    # dependencies=[Security(validate_user, scopes=["group"])],
 )
 async def list_group(user_id: UUID, page: int = 1, page_size: int = 25):
     query = (
