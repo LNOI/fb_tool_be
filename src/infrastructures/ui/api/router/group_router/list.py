@@ -11,7 +11,6 @@ from src.infrastructures.ui.api.common.custom_response import (
     ResponseModel,
 )
 from src.infrastructures.ui.api.common.paginate import paginate
-from src.infrastructures.ui.api.router.auth_router.login import validate_user
 from src.middleware import group_usecase
 
 router = APIRouter()

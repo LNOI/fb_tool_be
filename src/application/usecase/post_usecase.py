@@ -1,5 +1,5 @@
 from uuid import UUID
-
+from typing import List
 from injector import inject
 from sqlmodel.sql._expression_select_cls import Select
 
@@ -21,13 +21,14 @@ class PostUseCase:
     async def update_post(self, post: PostModel) -> PostModel:
         return await self._post_service.update_post(post)
 
+    async def update_posts(self, post: List[PostModel]) -> List[PostModel]:
+        return await self._post_service.update_posts(post)
+
     async def delete_post(self, post_id: UUID) -> PostModel:
         return await self._post_service.delete_post(post_id)
 
     async def query_post(self, filter_query: Select):
         return await self._post_service.query_posts(filter_query)
-    
+
     async def query_posts(self, filter_query: Select):
         return await self._post_service.query_posts(filter_query)
-    
-    

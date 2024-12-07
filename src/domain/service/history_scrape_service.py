@@ -1,4 +1,4 @@
-from typing import  List
+from typing import List
 from uuid import UUID
 
 from injector import inject
@@ -26,8 +26,12 @@ class HistoryScrapeService:
     async def delete_history_scrape(self, id: UUID) -> bool:
         return await self.db_repository.delete_item(HistoryScrapeModel, id)
 
-    async def query_history_scrape(self, filter_query: Select) -> List[HistoryScrapeModel]:
+    async def query_history_scrape(
+        self, filter_query: Select
+    ) -> List[HistoryScrapeModel]:
         return await self.db_repository.query_item(filter_query)
 
-    async def query_history_scrapes(self, filter_query: Select) -> List[HistoryScrapeModel]:
+    async def query_history_scrapes(
+        self, filter_query: Select
+    ) -> List[HistoryScrapeModel]:
         return await self.db_repository.query_items(filter_query)

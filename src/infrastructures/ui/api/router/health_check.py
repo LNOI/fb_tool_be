@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter
 
 router = APIRouter()
@@ -35,7 +34,6 @@ router = APIRouter()
 #
 #     except WebSocketDisconnect:
 #         manager.disconnect(client_id)
-
 
 
 # class WebhookData(BaseModel):
@@ -79,6 +77,7 @@ router = APIRouter()
 #                     }
 #                     }, str(client_id))
 #
+
 
 @router.get("/health-check")
 async def health_check():

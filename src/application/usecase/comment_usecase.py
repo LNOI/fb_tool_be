@@ -1,6 +1,5 @@
 from uuid import UUID
-from xml.dom.minidom import Comment
-
+from typing import List
 from injector import inject
 from sqlmodel.sql._expression_select_cls import Select
 
@@ -22,8 +21,14 @@ class CommentUseCase:
     async def update_comment(self, comment: CommentModel) -> CommentModel:
         return await self._comment_service.update_comment(comment)
 
+    async def update_comments(self, comments: List[CommentModel]) -> List[CommentModel]:
+        return await self._comment_service.update_comments(comments)
+
     async def delete_comment(self, comment_id: UUID) -> CommentModel:
         return await self._comment_service.delete_comment(comment_id)
 
     async def query_comment(self, filter_query: Select):
+        return await self._comment_service.query_comments(filter_query)
+
+    async def query_comments(self, filter_query: Select):
         return await self._comment_service.query_comments(filter_query)

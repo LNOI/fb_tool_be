@@ -23,4 +23,3 @@ class MessageModel(BaseModel, table=True):
     receiver_user_name: str
     receiver_user_profile: str
     tags: list[str] = Field(sa_column=Column(ARRAY(String)), default=[])
-

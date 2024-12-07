@@ -62,6 +62,13 @@ class FacebookDBRepository(DBRepository):
         return item
 
     @wrapper_session
+    async def update_items(self, items: List[T], session: Session) -> List[T]:
+        session.add_all(items)
+        session.commit()
+        # session.refresh(items)
+        return items
+
+    @wrapper_session
     async def get_item(self, model: T, uuid: UUID, session: Session) -> T:
         query = select(model).where(model.id == uuid).where(model.deleted_at.is_(None))
         return session.scalars(query).one_or_none()
@@ -77,3 +84,10 @@ class FacebookDBRepository(DBRepository):
         self, filter_query: Select, session: Session = None
     ) -> List[T]:
         return session.scalars(filter_query).all()
+
+    @wrapper_session
+    async def get_item_by_column(
+        self, model: T, column: str, value: str, session: Session
+    ) -> T:
+        query = select(model).where(getattr(model, column) == value)
+        return session.scalars(query).one_or_none()

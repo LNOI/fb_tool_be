@@ -1,5 +1,5 @@
 from typing import List
-from uuid import UUID 
+from uuid import UUID
 
 from datetime import datetime
 from pydantic import BaseModel, Field
@@ -13,6 +13,10 @@ class CreateCommentRequestDto(BaseModel):
     owner_link: str
     comment_date: datetime | None = None
     hc_id: UUID
+
+
+class CreateCommentRequestAdminDto(CreateCommentRequestDto):
+    user_id : UUID
 
 class UpdateCommentRequestDto(CreateCommentRequestDto):
     pass

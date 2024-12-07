@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.delete("/{post_id}", response_model=ResponseModel)
-async def delete_post(user_id: UUID, post_id: UUID):
+async def delete_post(post_id: UUID):
     is_deleted = await post_usecase.delete_post(post_id)
     if not is_deleted:
         return CustomJSONResponse(status_code=status.HTTP_404_NOT_FOUND, data=False)

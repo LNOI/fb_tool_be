@@ -1,7 +1,5 @@
 from uuid import UUID
-from typing import Union
 from pydantic import BaseModel, Field
-
 
 
 class CreatePostRequestDto(BaseModel):
@@ -14,7 +12,10 @@ class CreatePostRequestDto(BaseModel):
     reaction: int | None = None
     comments: list[dict] = Field(default=[])
     post_date: int = 0
-    hc_id :UUID
+    hc_id: UUID
+
+class CreatePostRequestAdminDto(CreatePostRequestDto):
+    user_id : UUID
 
 class UpdatePostRequestDto(CreatePostRequestDto):
     pass

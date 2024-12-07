@@ -27,6 +27,10 @@ class DBRepository(ABC, Generic[T]):
         raise NotImplementedError()
 
     @abstractmethod
+    async def update_items(self, items: List[T]) -> List[T]:
+        raise NotImplementedError()
+
+    @abstractmethod
     async def delete_item(self, model: T, uuid: UUID) -> bool:
         raise NotImplementedError()
 
@@ -36,4 +40,8 @@ class DBRepository(ABC, Generic[T]):
 
     @abstractmethod
     async def query_items(self, filter_query: Select) -> List[T]:
+        raise NotImplementedError()
+
+    @abstractmethod
+    async def get_item_by_column(self, model: T, column: str, value: Any) -> T:
         raise NotImplementedError()

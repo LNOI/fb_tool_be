@@ -5,12 +5,15 @@ from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
 
 from src.domain.model import (
+    accounts_model,
     comment_model,
     group_model,
+    history_scrape_model,
     message_model,
     post_model,
-    user_model,
-    history_scrape_model,
+    sessions_model,
+    users_model,
+    verification_token_model,
 )
 
 # this is the Alembic Config object, which provides

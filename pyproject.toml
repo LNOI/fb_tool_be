@@ -25,6 +25,11 @@ dependencies = [
     "boto3>=1.35.40",
     "boto3-stubs[essential]>=1.35.40",
     "websockets>=14.0",
+    "langchain>=0.3.7",
+    "langchain-openai>=0.2.9",
+    "langchain-community>=0.3.7",
+    "python-dotenv>=1.0.1",
+    "loguru>=0.7.3",
 ]
 readme = "README.md"
 requires-python = ">= 3.12"

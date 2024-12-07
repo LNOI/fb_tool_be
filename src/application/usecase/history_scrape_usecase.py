@@ -26,6 +26,6 @@ class HistoryScrapeUseCase:
 
     async def query_history(self, filter_query: Select):
         return await self._hc_service.query_history_scrape(filter_query)
-    
+
     async def query_histories(self, filter_query: Select):
         return await self._hc_service.query_history_scrapes(filter_query)

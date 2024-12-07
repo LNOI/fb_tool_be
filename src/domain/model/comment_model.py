@@ -10,10 +10,12 @@ class CommentModel(BaseModel, table=True):
     post_id: UUID = Field(foreign_key="post.id")
     user_id: UUID
     content: str | None = None
-    images: list[str] | None = Field(sa_column=Column(ARRAY(String)),default=[])
+    images: list[str] | None = Field(sa_column=Column(ARRAY(String)), default=[])
     owner_name: str
     owner_link: str
     comment_date: datetime = Field(default_factory=datetime.now, nullable=True)
     hc_id: UUID = Field(foreign_key="history_scrape.id", nullable=False)
     hc_scrape: "HistoryScrapeModel" = Relationship(back_populates="comments")
-
+    post: "PostModel" = Relationship(back_populates="comments")
+    category: str | None = Field(default=None, nullable=True)
+    message: str | None = Field(default=None, nullable=True)

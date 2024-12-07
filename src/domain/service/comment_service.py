@@ -23,8 +23,11 @@ class CommentService:
     async def update_comment(self, comment: CommentModel) -> CommentModel:
         return await self.db_repository.update_item(comment)
 
+    async def update_comments(self, comments: List[CommentModel]) -> List[CommentModel]:
+        return await self.db_repository.update_items(comments)
+
     async def delete_comment(self, comment_id: UUID) -> bool:
         return await self.db_repository.delete_item(CommentModel, comment_id)
 
     async def query_comments(self, filter_query: Select) -> List[CommentModel]:
-        return await self.db_repository.query_item(filter_query)
+        return await self.db_repository.query_items(filter_query)

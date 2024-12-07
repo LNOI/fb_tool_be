@@ -23,6 +23,9 @@ class PostService:
     async def update_post(self, post: PostModel) -> PostModel:
         return await self.db_repository.update_item(post)
 
+    async def update_posts(self, posts: List[PostModel]) -> List[PostModel]:
+        return await self.db_repository.update_items(posts)
+
     async def delete_post(self, post_id: UUID) -> bool:
         return await self.db_repository.delete_item(PostModel, post_id)
 

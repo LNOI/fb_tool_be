@@ -1,5 +1,6 @@
-from uuid import  UUID
+from uuid import UUID
 from pydantic import BaseModel
+
 
 class CreateGroupRequestDto(BaseModel):
     name: str
@@ -11,6 +12,10 @@ class CreateGroupRequestDto(BaseModel):
     is_member: bool = False
     user_admin: str | None = None
     hc_id: UUID
+
+class CreateGroupRequestAdminDto(CreateGroupRequestDto):
+    user_id : UUID
+
 
 class UpdateGroupRequestDto(CreateGroupRequestDto):
     pass

@@ -17,3 +17,4 @@ class GroupModel(BaseModel, table=True):
     user_admin: str | None = None
     hc_id: UUID = Field(foreign_key="history_scrape.id", nullable=False)
     hc_scrape: "HistoryScrapeModel" = Relationship(back_populates="groups")
+    posts: list["PostModel"] = Relationship(back_populates="group")
