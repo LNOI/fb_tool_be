@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Security
+from fastapi import APIRouter
 from starlette import status
 
 from src.infrastructures.ui.api.common.custom_response import (
@@ -15,7 +15,6 @@ router = APIRouter()
 @router.get(
     "/{group_id}",
     response_model=ResponseModel,
-    # dependencies=[Security(validate_user, scopes=["group"])],
 )
 async def get_group(user_id: UUID, group_id: UUID):
     group = await group_usecase.get_group(group_id)
